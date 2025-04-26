@@ -151,3 +151,102 @@ The request body must be a JSON object containing the following fields:
 - `500`: Server errors
 
 This documentation provides a comprehensive overview of the user registration and login endpoints, including the required data format and possible responses.
+
+## 3. Get User Profile
+
+### Endpoint
+`GET /users/profile`
+
+### Description
+This endpoint retrieves the authenticated user's profile information. The request must include a valid JWT token in the cookie or `Authorization` header.
+
+### Headers
+- `Cookie`: `token=JWT_TOKEN`
+- or
+- `Authorization`: `Bearer JWT_TOKEN`
+
+### Responses
+
+#### Success
+- **200 OK**: Returns the user's profile.
+  - Response body:
+    ```json
+    {
+      "user": {
+        "_id": "USER_ID",
+        "fullName": {
+          "firstName": "John",
+          "lastName": "Doe"
+        },
+        "email": "john.doe@example.com",
+        "socketID": null,
+        "createdAt": "2023-10-01T00:00:00.000Z",
+        "updatedAt": "2023-10-01T00:00:00.000Z"
+      }
+    }
+    ```
+
+#### Errors
+- **401 Unauthorized**: Missing or invalid token.
+  - Response body:
+    ```json
+    {
+      "message": "Unauthorized"
+    }
+    ```
+- **404 Not Found**: User not found.
+  - Response body:
+    ```json
+    {
+      "message": "User not found"
+    }
+    ```
+- **500 Internal Server Error**: An error occurred while processing the request.
+  - Response body:
+    ```json
+    {
+      "message": "Error message"
+    }
+    ```
+
+---
+
+## 4. User Logout
+
+### Endpoint
+`GET /users/logout`
+
+### Description
+This endpoint logs out the authenticated user by clearing the authentication cookie and blacklisting the JWT token. The request must include a valid JWT token in the cookie or `Authorization` header.
+
+### Headers
+- `Cookie`: `token=JWT_TOKEN`
+- or
+- `Authorization`: `Bearer JWT_TOKEN`
+
+### Responses
+
+#### Success
+- **200 OK**: Logout successful.
+  - Response body:
+    ```json
+    {
+      "message": "Logout successful"
+    }
+    ```
+
+#### Errors
+- **401 Unauthorized**: Missing or invalid token.
+  - Response body:
+    ```json
+    {
+      "message": "Unauthorized"
+    }
+    ```
+- **500 Internal Server Error**: An error occurred while processing the request.
+  - Response body:
+    ```json
+    {
+      "message": "Error message"
+    }
+    ```
