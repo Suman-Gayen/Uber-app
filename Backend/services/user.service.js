@@ -1,6 +1,6 @@
 import userModel from "../models/user.models.js";
 
-const userService = async ({ firstName, lastName, email, password }) => {
+const createUser = async ({ firstName, lastName, email, password }) => {
   if (!firstName || !lastName || !email || !password) {
     throw new Error(" All fields are required ");
   }
@@ -20,4 +20,4 @@ const userService = async ({ firstName, lastName, email, password }) => {
   });
   return user;
 };
-export default userService;
+export { createUser };
