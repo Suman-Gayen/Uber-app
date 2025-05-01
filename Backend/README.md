@@ -251,7 +251,11 @@ This endpoint logs out the authenticated user by clearing the authentication coo
     }
     ```
 
-    ## 5. Captain Registration
+---
+---
+
+
+## 5. Captain Registration
 
 ### Endpoint
 `POST /captains/register`
