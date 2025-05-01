@@ -3,6 +3,7 @@ import {registerUser, loginUser, getUserProfile, logoutUser} from "../controller
 import { body } from "express-validator";
 import authMiddleware from "../middleware/auth.middle.js";
 const userRouter = express.Router();
+import captainModel from "../models/captain.model.js";
 
 userRouter.post(
   "/register",

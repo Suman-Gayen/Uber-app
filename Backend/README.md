@@ -250,3 +250,105 @@ This endpoint logs out the authenticated user by clearing the authentication coo
       "message": "Error message"
     }
     ```
+
+    ## 5. Captain Registration
+
+### Endpoint
+`POST /captains/register`
+
+### Description
+This endpoint allows a new captain (driver) to register by providing personal and vehicle information. All fields are required and validated.
+
+### Request Body
+The request body must be a JSON object containing the following fields:
+
+- `fullName`: An object containing:
+  - `firstName`: String, minimum 3 characters.
+  - `lastName`: String, minimum 3 characters.
+- `email`: String, must be a valid and unique email address.
+- `password`: String, minimum 6 characters.
+- `vehicle`: An object containing:
+  - `color`: String, minimum 3 characters.
+  - `plate`: String, minimum 3 characters.
+  - `capaCity`: Number, minimum 1.
+  - `vchileType`: String, must be one of `"car"`, `"bike"`, or `"auto"`.
+
+#### Example Request
+```json
+{
+  "fullName": {
+    "firstName": "Alice",
+    "lastName": "Smith"
+  },
+  "email": "alice.smith@example.com",
+  "password": "securepassword",
+  "vehicle": {
+    "color": "Red",
+    "plate": "XYZ1234",
+    "capaCity": 4,
+    "vchileType": "car"
+  }
+}
+```
+
+### Responses
+
+#### Success
+- **200 OK**: Captain registered successfully.
+  - Response body:
+    ```json
+    {
+      "message": "Captain registered successfully",
+      "token": "JWT_TOKEN",
+      "captain": {
+        "_id": "CAPTAIN_ID",
+        "fullName": {
+          "firstName": "Alice",
+          "lastName": "Smith"
+        },
+        "email": "alice.smith@example.com",
+        "vehicle": {
+          "color": "Red",
+          "plate": "XYZ1234",
+          "capaCity": 4,
+          "vchileType": "car"
+        },
+        "status": "inactive",
+        "createdAt": "2023-10-01T00:00:00.000Z",
+        "updatedAt": "2023-10-01T00:00:00.000Z"
+      }
+    }
+    ```
+
+#### Validation Errors
+- **400 Bad Request**: Validation errors occurred.
+  - Response body:
+    ```json
+    {
+      "errors": [
+        {
+          "msg": "Invalid Email",
+          "param": "email",
+          "location": "body"
+        }
+      ]
+    }
+    ```
+
+#### Duplicate Email
+- **400 Bad Request**: Captain already exists.
+  - Response body:
+    ```json
+    {
+      "message": "Captain Already Exist"
+    }
+    ```
+
+#### Server Errors
+- **500 Internal Server Error**: An error occurred while processing the request.
+  - Response body:
+    ```json
+    {
+      "message": "Error message"
+    }
+    ```

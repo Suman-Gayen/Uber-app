@@ -13,6 +13,10 @@ const registerUser = async (req, res, next) => {
 
   try {
     const { fullName, email, password } = req.body;
+    const isFindUser = await userModel.findOne({ email });
+    if (isFindUser) {
+      return res.status(400).json({ message: "User Already Exist" });
+    }
     const hashPassword = await userModel.hashPassword(password);
 
     const user = await createUser({
@@ -44,7 +48,7 @@ const loginUser = async (req, res) => {
       return res.status(401).json({ message: "Invalid email or password" });
     }
     const token = user.generateAuthToken(); // Generate a token for the user
-    res.cookie("token", token,) // Set the token in a cookie
+    res.cookie("token", token); // Set the token in a cookie
 
     return res.status(200).json({ message: "Login successful", token, user });
   } catch (error) {
@@ -78,7 +82,6 @@ const logoutUser = async (req, res) => {
     console.log(error);
     return res.status(500).json({ message: error.message });
   }
-}
-
+};
 
 export { registerUser, loginUser, getUserProfile, logoutUser };
