@@ -356,3 +356,193 @@ The request body must be a JSON object containing the following fields:
       "message": "Error message"
     }
     ```
+
+
+
+# Captain Authentication API
+
+## 6. Captain Login
+
+### Endpoint
+`POST /captains/login`
+
+### Description
+Allows a captain to log in using their email and password. On successful authentication, a JWT token is generated and set as a cookie for session management.
+
+### Request Body
+```json
+{
+  "email": "alice.smith@example.com",
+  "password": "securepassword"
+}
+```
+
+### Responses
+
+#### Success
+- **200 OK**
+  ```json
+  {
+    "message": "Captain logged in successfully",
+    "token": "JWT_TOKEN",
+    "captain": {
+      "_id": "CAPTAIN_ID",
+      "fullName": {
+        "firstName": "Alice",
+        "lastName": "Smith"
+      },
+      "email": "alice.smith@example.com",
+      "vehicle": {
+        "color": "Red",
+        "plate": "XYZ1234",
+        "capaCity": 4,
+        "vchileType": "car"
+      },
+      "status": "inactive",
+      "createdAt": "2023-10-01T00:00:00.000Z",
+      "updatedAt": "2023-10-01T00:00:00.000Z"
+    }
+  }
+  ```
+
+#### Authentication Errors
+- **401 Unauthorized**
+  ```json
+  {
+    "message": "Invalid email or password"
+  }
+  ```
+
+#### Validation Errors
+- **400 Bad Request**
+  ```json
+  {
+    "errors": [
+      {
+        "msg": "Invalid Email",
+        "param": "email",
+        "location": "body"
+      }
+    ]
+  }
+  ```
+
+#### Server Errors
+- **500 Internal Server Error**
+  ```json
+  {
+    "message": "Internal server error"
+  }
+  ```
+
+---
+
+## 7. Captain Profile
+
+### Endpoint
+`GET /captains/profile`
+
+### Description
+Retrieves the authenticated captain's profile. Requires a valid JWT token in the cookie or `Authorization` header.
+
+### Headers
+- `Cookie`: `token=JWT_TOKEN`
+- or
+- `Authorization`: `Bearer JWT_TOKEN`
+
+### Responses
+
+#### Success
+- **200 OK**
+  ```json
+  {
+    "captain": {
+      "_id": "CAPTAIN_ID",
+      "fullName": {
+        "firstName": "Alice",
+        "lastName": "Smith"
+      },
+      "email": "alice.smith@example.com",
+      "vehicle": {
+        "color": "Red",
+        "plate": "XYZ1234",
+        "capaCity": 4,
+        "vchileType": "car"
+      },
+      "status": "inactive",
+      "createdAt": "2023-10-01T00:00:00.000Z",
+      "updatedAt": "2023-10-01T00:00:00.000Z"
+    }
+  }
+  ```
+
+#### Errors
+- **401 Unauthorized**
+  ```json
+  {
+    "message": "Unauthorized"
+  }
+  ```
+- **404 Not Found**
+  ```json
+  {
+    "message": "captain not found"
+  }
+  ```
+- **500 Internal Server Error**
+  ```json
+  {
+    "message": "Error message"
+  }
+  ```
+
+---
+
+## 8. Captain Logout
+
+### Endpoint
+`GET /captains/logout`
+
+### Description
+Logs out the authenticated captain by clearing the authentication cookie and blacklisting the JWT token. Requires a valid JWT token in the cookie or `Authorization` header.
+
+### Headers
+- `Cookie`: `token=JWT_TOKEN`
+- or
+- `Authorization`: `Bearer JWT_TOKEN`
+
+### Responses
+
+#### Success
+- **200 OK**
+  ```json
+  {
+    "message": "Logout Done"
+  }
+  ```
+
+#### Errors
+- **401 Unauthorized**
+  ```json
+  {
+    "message": "Unauthorized"
+  }
+  ```
+- **500 Internal Server Error**
+  ```json
+  {
+    "message": "Error message"
+  }
+  ```
+
+---
+
+## Security Implementation
+
+- **Token Blacklisting:**  
+  On logout, the JWT token is stored in a blacklist ([`BlacklistToken`](Backend/models/blacklistToken.model.js)). All protected endpoints check this blacklist to prevent reuse of logged-out tokens.
+
+- **Captain-Specific Authentication Middleware:**  
+  The [`authCaptain`](Backend/middleware/auth.middle.js) middleware validates the JWT token, checks the blacklist, and ensures the request is made by an authenticated captain.
+
+Refer to [`captain.router.js`](Backend/routers/captain.router.js) for route definitions and [`captain.controller.js`](Backend/controllers/captain.controller.js) for controller logic.

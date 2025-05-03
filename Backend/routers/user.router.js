@@ -1,9 +1,8 @@
 import express from "express";
 import {registerUser, loginUser, getUserProfile, logoutUser} from "../controllers/user.controller.js";
 import { body } from "express-validator";
-import authMiddleware from "../middleware/auth.middle.js";
+import {authMiddleware} from "../middleware/auth.middle.js";
 const userRouter = express.Router();
-import captainModel from "../models/captain.model.js";
 
 userRouter.post(
   "/register",
